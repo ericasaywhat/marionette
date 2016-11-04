@@ -1,86 +1,45 @@
-#include <Wire.h>
-#include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_MS_PWMServoDriver.h"
+#include<Servo.h>
 
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *arm1 = AFMS.getMotor(1);
-Adafruit_DCMotor *legs = AFMS.getMotor(2);
-Adafruit_DCMotor *arm2 = AFMS.getMotor(3);
+Servo arm1;
+Servo arm2;
+Servo leg1;
+Servo leg2;
 
-
-
-unsigned long lastMillis = 0;
-unsigned long currentMillis = 0;
 
 String cmd = "";
+int pos = 0;
+int pos2 = 0;
 
 void setup () {
   // start serial communication.
   Serial.begin (9600);
-  
-  AFMS.begin();  // create with the default frequency 1.6KHz
 
-//  arm1->setSpeed(50);
-//  arms->run(FORWARD);
-//  // turn on motor
-//  arms->run(RELEASE);
+  arm1.attach(9);
+  arm2.attach(10);
 
-  arm2->setSpeed(50);
-//  leg1->run(FORWARD);
-//  // turn on motor
-//  leg2->run(RELEASE);
-
-  legs->setSpeed(50);
-//  leg2->run(FORWARD);
-//  // turn on motor
-//  leg2->run(RELEASE);
 
 }
 
-// loop the main sketch.
 void loop () {
+  arm1.write(0);
+  arm2.write(0);
   
-  while(Serial.available()>0) {
+  while(Serial.available()>0) { 
     char input = Serial.read();
     cmd.concat(input);
   }
-//    Serial.println(cmd);
-
-    Serial.print("Last");
-    Serial.println(lastMillis);
   
     if (cmd == "walk") {
-//      arm1->run(FORWARD);
-      arm2->run(FORWARD);
-      currentMillis = millis();
-      Serial.println(currentMillis);
-        
-      if (currentMillis - lastMillis > 500){
-//        arm1->run(RELEASE);
-        arm2->run(RELEASE);
-        Serial.println("rewind");
-      }
-
-      currentMillis = millis();
-      if (currentMillis - lastMillis > 500) {
-//        arm1->run(BACKWARD);
-        arm2->run(BACKWARD);
-
-        Serial.println("stop walk");
-
-        lastMillis = currentMillis;
-        
-      }
-
-
-   
-    
-  
-
-
-
-    
-    
-  }
-  
+      armswing(arm1,arm2);
+    } 
 }
+
+void armswing(Servo servo1, Servo servo2) {
+      for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+          servo1.write(pos);
+          servo2.write(pos);
+          delay(15); 
+       
+      }
+}
+
