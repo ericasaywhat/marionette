@@ -3,32 +3,37 @@
 Servo arm1;
 Servo arm2;
 Servo legs;
+Servo head;
 
 
 int pos = 0;
 int pos2 = 0;
 int legPos;
 int legPos1;
+int index;
+const int numActions = 3;
 unsigned long startTime;
 unsigned long endTime;
-String command1;
-int duration1;
-String command2;
-int duration2;
+String input;
+String commands[numActions];
+String durations[numActions];
 
 void setup () {
   // start serial communication.
   Serial.begin (9600);
 
+  head.attach(12);
   arm1.attach(9);
   arm2.attach(11);
   legs.attach(10);
+
 }
 
 void loop () {
     arm1.write(170);
     arm2.write(0);
     legs.write(135);
+    head.write(65);
     
   while(Serial.available()>0) { 
     input = Serial.readString();
@@ -46,21 +51,25 @@ void loop () {
       if (commands[i] == "sword"){
         startTime = millis();
         Serial.print("wagao");
-        while (millis() < startTime + duration*1000) {
+        while (millis() < startTime + durations[i].toInt()*1000) {
           swordFight(arm1,arm2,legs);      
         }
-      command = "";
-    }
-        
-      } else if (commands[i] == "walk") {
+      commands[i] = "";
+       } else if (commands[i] == "walk") {
           startTime = millis();
           Serial.print("wagao");
-          while (millis() < startTime + duration*1000) {
+          while (millis() < startTime + durations[i].toInt()*1000) {
            walk(arm1,arm2,legs);      
           }
-          command = "";
-        } else if (commands[i] == "bow") {
-
+          commands[i] = "";
+      } else if (commands[i] == "bow") {
+          startTime = millis();
+          Serial.print("wagao");
+          while (millis() < startTime + durations[i].toInt()*1000) {
+           bow(head);
+           head.write(65);    //return to upright position      
+          }
+          commands[i] = "";      
       }
     }
 
@@ -85,7 +94,7 @@ void loop () {
 //    command = "";
 //  }
 //  
-//}
+}
 
 
 void walk(Servo servo1, Servo servo2, Servo servo3) {
@@ -121,14 +130,10 @@ void swordFight (Servo servo1, Servo servo2, Servo servo3) {
       servo1.write(pos);
       servo2.write(pos-90); 
       servo3.write(140);
-//      servo2.write(legPos);
       legPos -= 1;
 
       delay(15);
-      servo2.write(legPos);
-
-
-      
+      servo2.write(legPos);      
   }
     for (pos = 145; pos >= 125; pos -= 1) { // goes from 180 degrees to 0 degrees
       servo1.write(pos);              // tell servo to go to position in variable 'pos'
@@ -137,10 +142,21 @@ void swordFight (Servo servo1, Servo servo2, Servo servo3) {
       servo3.write(130);
       legPos1 += 1;
       servo2.write(legPos1);
-      delay(15);                       // waits 15ms for the servo to reach the position
-      
+      delay(15);                       // waits 15ms for the servo to reach the position 
   }
   
+}
+
+void bow(Servo servo1){
+  for (pos = 0; pos <= 65; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    servo1.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  for (pos = 65; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    servo1.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
 }
 
 void rest(Servo servo1, Servo servo2, Servo servo3) {
