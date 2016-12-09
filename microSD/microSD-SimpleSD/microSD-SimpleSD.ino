@@ -8,8 +8,7 @@
       // Using F("...") to avoid wasting RAM  
       Serial.print(F("\nInitializing SD card..."));  
       
-      // If your SD card CS-Pin is not at Pin 4, enable and adapt the following line:
-      // SdPlay.setSDCSPin(10);
+       SdPlay.setSDCSPin(10);
       
       if (!SdPlay.init(SSDA_MODE_FULLRATE | SSDA_MODE_MONO | SSDA_MODE_AUTOWORKER)) {
         Serial.println(F("initialization failed. Things to check:"));
@@ -24,7 +23,7 @@
       }
     
       Serial.print(F("Looking for on.wav... "));
-      if(!SdPlay.setFile("out.wav")) {
+      if(!SdPlay.setFile("ercash.wav")) {
         Serial.println(F(" not found on card! Error code: "));
         Serial.println(SdPlay.getLastError());
         while(1);

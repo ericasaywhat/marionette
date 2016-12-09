@@ -14,7 +14,7 @@ void setup(){
     Serial.println("SD fail");  
     return;   // don't do anything more if not
   }
-  sound.play("out.wav");
+  sound.play("NoCeello.wav");
   Serial.println(sound.isPlaying());  
 }
 
