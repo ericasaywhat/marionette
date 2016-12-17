@@ -5,12 +5,20 @@ pygame.init()
 
 
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM1', 9600)
+command = ser.readline()
 
-while True:
+print command
+
+while command:
 	pygame.mixer.music.load("POESound.wav")
 	pygame.mixer.music.play()
 	pygame.event.wait()
+	# pygame.event.get()
+	# if event.type =a= KEYDOWN:
+ #         if event.key == K_ESCAPE:
+ #         	pygame.mixer.stop()
+ #         	command = False
 
 
 
