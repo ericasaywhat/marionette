@@ -34,6 +34,8 @@ void loop () {
     arm2.write(0);
     legs.write(135);
     head.write(65);
+
+
     
   while(Serial.available()>0) { 
     input = Serial.readString();

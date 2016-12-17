@@ -3,7 +3,7 @@
 #ifndef HEADER_HELPERFUNC
   #define HEADER_HELPERFUNC
 
-  #include "Arduino.h"
+#include "Arduino.h"
 #include<Servo.h>
 #include <Adafruit_MotorShield.h>
 
@@ -12,10 +12,12 @@ Servo arm2;
 Servo legs;
 Servo head;
 
+Adafruit_MotorShield AFMSbot(0x61); 
+Adafruit_MotorShield AFMStop(0x60); 
 
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *rotate = AFMS.getMotor(1);
-Adafruit_StepperMotor *gantry = AFMS.getStepper(200,2);
+Adafruit_DCMotor *rotate = AFMSbot.getMotor(1);
+Adafruit_StepperMotor *gantry = AFMStop.getStepper(200,2);
+Adafruit_StepperMotor *curtains = AFMSbot.getStepper(200,2);
 
    
 
@@ -24,7 +26,7 @@ int pos = 0;
 int pos2 = 0;
 int legPos;
 int legPos1;
-int index;
+int index ;
 const int numActions = 3;
 unsigned long startTime;
 unsigned long endTime;
@@ -38,7 +40,34 @@ int sensorOneValue = 0;
 int sensorTwoValue = 0;
 
 
-void right(int milli){
+
+
+void openCurtains(int steps) {
+  curtains->step(steps, BACKWARD,DOUBLE); 
+  delay(10);
+  curtains->release(); 
+}
+
+void closeCurtains(int steps) {
+  curtains->step(steps, FORWARD,DOUBLE);
+  delay(10);
+  curtains->release(); 
+  
+}
+
+void moveRight(int steps) {
+  startTime = millis();
+  gantry->step(steps,FORWARD,SINGLE);  
+
+}
+
+void moveLeft(int steps) {
+  startTime = millis();
+  gantry->step(steps,BACKWARD, SINGLE);  
+}
+
+
+void turnRight(int milli){
   startTime = millis();
   rotate->run(FORWARD);  
   while (millis()-startTime< milli*1000) {
@@ -46,7 +75,7 @@ void right(int milli){
   }
 }
 
-void left(int milli){
+void turnLeft(int milli){
   startTime = millis();
   rotate->run(BACKWARD);
   while (millis()-startTime<milli*1000) {
@@ -57,6 +86,7 @@ void left(int milli){
 
 void readInput(){
   input = Serial.readString();
+  Serial.println("Start");
   while(index < numActions){
     commands[index] = input.substring(0,input.indexOf(','));
     durations[index] = input.substring(input.indexOf(',')+1, input.indexOf(';'));
@@ -77,7 +107,7 @@ void walk(Servo servo1, Servo servo2, Servo servo3) {
   legPos = 180;
   legPos1 = 95;
 
-  for (pos = 90; pos <= 180; pos += 1) {       // goes from 0 degrees to 180 degrees
+  for (pos = 90; pos <= 180; pos += 2) {       // goes from 0 degrees to 180 degrees
       
       servo1.write(pos);
       servo2.write(pos-90);
@@ -85,7 +115,7 @@ void walk(Servo servo1, Servo servo2, Servo servo3) {
       legPos -= 1;
       delay(15); 
   }
-    for (pos = 180; pos >= 90; pos -= 1) { // goes from 180 degrees to 0 degrees
+    for (pos = 180; pos >= 90; pos -= 2) { // goes from 180 degrees to 0 degrees
       servo1.write(pos);              // tell servo to go to position in variable 'pos'
       servo2.write(pos-90);
       servo3.write(legPos1);

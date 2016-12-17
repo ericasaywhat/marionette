@@ -23,7 +23,7 @@
       }
     
       Serial.print(F("Looking for on.wav... "));
-      if(!SdPlay.setFile("ercash.wav")) {
+      if(!SdPlay.setFile("NoCeello.wav")) {
         Serial.println(F(" not found on card! Error code: "));
         Serial.println(SdPlay.getLastError());
         while(1);
