@@ -24,6 +24,7 @@ void setup () {
 
   rotate->setSpeed(150);
   gantry->setSpeed(10);
+  curtains->setSpeed(30);
 
 }
 
@@ -31,28 +32,20 @@ void loop () {
   
 //  Process p;
   restPos();
-  
-//  moveRight(100);
-  moveLeft(100);  //needs debugging once the belt is re-tensioned
+
   
   sensorOneValue = analogRead(sens_oneIn);
 
-//Uncommenting the following three lines will allow for versatility in actions
-//  while(Serial.available()>0) {
-//    readInput();
-//  }
+//paceLeft,5;turnRight,2;paceRight,5;turnLeft,2;paceLeft,15
 
-  if (sensorOneValue > 230 or sensorTwoValue > 230) {
-    openCurtains(105);
-    delay(10);
-    index = 2;
-    commands[0] = "walk";
-    commands[1] = "sword";
-    commands[2] = "bow";
-    durations[0] = 10;
-    durations[1] = 10;
-    durations[2] = 3;
-
+//  Uncommenting the following three lines will allow for versatility in actions
+  while(Serial.available()>0) {
+    readInput();
+    if (sensorOneValue > 250 or sensorTwoValue > 250) {
+  //    closeCurtains(1350);
+      openCurtains(1350);
+      delay(10);
+    }
   }
 
 //  closeCurtains(105);
@@ -79,6 +72,20 @@ void loop () {
         walk(arm1, arm2, legs);
       }
       commands[i] = "";
+    } else if (commands[i] == "paceRight") {
+      startTime = millis();
+      Serial.print("wagao");
+      while (millis() < startTime + durations[i].toInt() * 1000) {
+        paceRight(arm1, arm2, legs);
+      }
+      commands[i] = "";
+    } else if (commands[i] == "paceLeft") {
+      startTime = millis();
+      Serial.print("wagao");
+      while (millis() < startTime + durations[i].toInt() * 1000) {
+        paceLeft(arm1, arm2, legs);
+      }
+      commands[i] = "";
     } else if (commands[i] == "bow") {
       startTime = millis();
       Serial.print("wagao");
@@ -91,14 +98,14 @@ void loop () {
       startTime = millis();
       Serial.print("wagao");
       while (millis() < startTime + durations[i].toInt() * 1000) {
-        turnRight(durations[i]);
+        turnRight(durations[i].toInt());
       }
       commands[i] = "";
     } else if (commands[i] == "turnLeft") {
       startTime = millis();
       Serial.print("wagao");
       while (millis() < startTime + durations[i].toInt() * 1000) {
-        turnLeft(durations[i]);
+        turnLeft(durations[i].toInt());
       }
       commands[i] = "";
     } else if (commands[i] == "moveRight") {
@@ -117,7 +124,8 @@ void loop () {
       commands[i] = "";
     } 
   }
-//  closeCurtains(105);
+  
+//  closeCurtains(200);
 
 
 }

@@ -56,13 +56,11 @@ void closeCurtains(int steps) {
 }
 
 void moveRight(int steps) {
-  startTime = millis();
   gantry->step(steps,FORWARD,SINGLE);  
 
 }
 
 void moveLeft(int steps) {
-  startTime = millis();
   gantry->step(steps,BACKWARD, SINGLE);  
 }
 
@@ -123,8 +121,48 @@ void walk(Servo servo1, Servo servo2, Servo servo3) {
       delay(15);                       // waits 15ms for the servo to reach the position
       
   }
+}
 
-  
+void paceRight(Servo servo1, Servo servo2, Servo servo3) {
+  legPos = 180;
+  legPos1 = 95;
+
+  for (pos = 90; pos <= 180; pos += 2) {       // goes from 0 degrees to 180 degrees
+      gantry->onestep(FORWARD,SINGLE);
+      servo1.write(pos);
+      servo2.write(pos-90);
+      servo3.write(legPos);
+      legPos -= 1;
+      delay(15); 
+  }
+    for (pos = 180; pos >= 90; pos -= 2) { // goes from 180 degrees to 0 degrees
+      servo1.write(pos);              // tell servo to go to position in variable 'pos'
+      servo2.write(pos-90);
+      servo3.write(legPos1);
+      legPos1 += 1;
+      delay(15);                       // waits 15ms for the servo to reach the position 
+  };
+}
+
+void paceLeft(Servo servo1, Servo servo2, Servo servo3) {
+  legPos = 180;
+  legPos1 = 95;
+
+  for (pos = 90; pos <= 180; pos += 2) {       // goes from 0 degrees to 180 degrees
+      gantry->onestep(BACKWARD,SINGLE);
+      servo1.write(pos);
+      servo2.write(pos-90);
+      servo3.write(legPos);
+      legPos -= 1;
+      delay(15); 
+  }
+    for (pos = 180; pos >= 90; pos -= 2) { // goes from 180 degrees to 0 degrees
+      servo1.write(pos);              // tell servo to go to position in variable 'pos'
+      servo2.write(pos-90);
+      servo3.write(legPos1);
+      legPos1 += 1;
+      delay(15);                       // waits 15ms for the servo to reach the position 
+  };
 }
 
 void swordFight (Servo servo1, Servo servo2, Servo servo3) {
