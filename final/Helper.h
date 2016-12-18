@@ -27,59 +27,69 @@ int pos2 = 0;
 int legPos;
 int legPos1;
 int index ;
-const int numActions = 3;
+const int numActions = 6;
 unsigned long startTime;
 unsigned long endTime;
 String input;
 String commands[numActions];
 String durations[numActions];
 
-const int sens_oneIn = A0;
+const int sens_oneIn = A2;
 const int sens_twoIn = A1;
 int sensorOneValue = 0;
 int sensorTwoValue = 0;
-
-
 
 
 void openCurtains(int steps) {
   curtains->step(steps, BACKWARD,DOUBLE); 
   delay(10);
   curtains->release(); 
+  Serial.println("Opening Curtains");
 }
 
 void closeCurtains(int steps) {
   curtains->step(steps, FORWARD,DOUBLE);
   delay(10);
   curtains->release(); 
+  Serial.println("Closing Curtains");
   
 }
 
 void moveRight(int steps) {
   gantry->step(steps,FORWARD,SINGLE);  
+  Serial.println("Moving right");
 
 }
 
 void moveLeft(int steps) {
-  gantry->step(steps,BACKWARD, SINGLE);  
+  gantry->step(steps,BACKWARD, SINGLE); 
+  Serial.println("Moving left");
+
 }
 
 
 void turnRight(int milli){
   startTime = millis();
-  rotate->run(FORWARD);  
+  rotate->run(BACKWARD);  
   while (millis()-startTime< milli*1000) {
     rotate->setSpeed(100);  
   }
+    rotate->run(RELEASE);
+    Serial.println("turning right");
+
+
 }
 
 void turnLeft(int milli){
   startTime = millis();
-  rotate->run(BACKWARD);
+  rotate->run(FORWARD);
   while (millis()-startTime<milli*1000) {
     rotate->setSpeed(100);  
     delay(10);
   }
+  rotate->run(RELEASE);
+  Serial.println("turning left");
+
 }
 
 void readInput(){
